@@ -39,20 +39,29 @@ internal class PitStopStrategy : IPitStopStrategy
 
     public static PitStopStrategy CreateStrategy()
     {
-        var strategy = new PitStopStrategy();
-        strategy.CreateAllStintsInStrategy();
-        Console.WriteLine($"Current strategy time is {strategy.TotalTime}");
-        Console.WriteLine();
-        return strategy;
+        return CreateStrategy(null);
     }
 
     public static PitStopStrategy CreateStrategy(TimeSpan fuelPenaltyPerUnit)
     {
-        var strategy = new PitStopStrategy(fuelPenaltyPerUnit);
-        strategy.CreateAllStintsInStrategy();
+        return CreateStrategy(fuelPenaltyPerUnit);
+    }
+
+    private static PitStopStrategy CreateStrategy(TimeSpan? fuelPenaltyPerUnit)
+    {
+         PitStopStrategy strategy = 
+             fuelPenaltyPerUnit == null 
+             ? new PitStopStrategy() 
+             : new PitStopStrategy((TimeSpan)fuelPenaltyPerUnit);
+         strategy.CreateAllStintsInStrategy();
+         PrintStrategyTime(strategy);
+         return strategy;
+    }
+
+    private static void PrintStrategyTime(PitStopStrategy strategy)
+    {
         Console.WriteLine($"Current strategy time is {strategy.TotalTime}");
         Console.WriteLine();
-        return strategy;
     }
 
     private void CreateAllStintsInStrategy()
@@ -76,7 +85,6 @@ internal class PitStopStrategy : IPitStopStrategy
             }
         } while (isAdd);
     }
-
 
 
     public static PitStopStrategy CreateStrategiesAndReturnFastest()
