@@ -8,6 +8,7 @@ public static class Program
     {
         var a = new Stint(new TimeSpan(0, 0, 1, 0), 20, 1800, new TimeSpan(0, 0, 0, 0, 1));
         Console.WriteLine(a.StintTime());
-        var b = PitStopStrategy.CreateStrategiesAndFindFastest();
+        IPitStopStrategy b = PitStopStrategy.CreateStrategiesAndReturnFastest();
+        Console.WriteLine($"Fastest strategy time is {b.TotalTime}");
     }
 }
