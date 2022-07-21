@@ -40,7 +40,7 @@ internal class PitStopStrategy : IPitStopStrategy
     public static PitStopStrategy CreateStrategy()
     {
         var strategy = new PitStopStrategy();
-        strategy.CreateAllStintsInStrategy(strategy.FuelPenaltyPerUnit);
+        strategy.CreateAllStintsInStrategy();
         Console.WriteLine($"Current strategy time is {strategy.TotalTime}");
         Console.WriteLine();
         return strategy;
@@ -49,18 +49,18 @@ internal class PitStopStrategy : IPitStopStrategy
     public static PitStopStrategy CreateStrategy(TimeSpan fuelPenaltyPerUnit)
     {
         var strategy = new PitStopStrategy(fuelPenaltyPerUnit);
-        strategy.CreateAllStintsInStrategy(strategy.FuelPenaltyPerUnit);
+        strategy.CreateAllStintsInStrategy();
         Console.WriteLine($"Current strategy time is {strategy.TotalTime}");
         Console.WriteLine();
         return strategy;
     }
 
-    private void CreateAllStintsInStrategy(TimeSpan fuelPenaltyPerUnit)
+    private void CreateAllStintsInStrategy()
     {
-        var stint = Stint.CreateStint(_isFuelPenaltySet, fuelPenaltyPerUnit);
-        fuelPenaltyPerUnit = stint.FuelPenaltyPerUnit;
+        var stint = Stint.CreateStint(_isFuelPenaltySet, FuelPenaltyPerUnit);
+        FuelPenaltyPerUnit = stint.FuelPenaltyPerUnit;
         TotalTime += stint.StintTime();
-        AddNewStintsIfUserWant(fuelPenaltyPerUnit);
+        AddNewStintsIfUserWant(FuelPenaltyPerUnit);
     }
 
     private void AddNewStintsIfUserWant(TimeSpan fuelPenaltyPerUnit)
@@ -89,10 +89,12 @@ internal class PitStopStrategy : IPitStopStrategy
     private static List<PitStopStrategy> CreatePitStopStrategiesList()
     {
         var strategiesList = new List<PitStopStrategy>();
-        bool isStrategiesCreationNotEnd = true;
+        bool isStrategiesCreationNotEnd;
         do
         {
-            strategiesList.Add(CreateStrategy());
+            strategiesList.Add(strategiesList.Count == 0
+                ? CreateStrategy()
+                : CreateStrategy(strategiesList[0].FuelPenaltyPerUnit));
             isStrategiesCreationNotEnd = Input.CreateBoolean("Do you want to add strategy? (y/n)");
         } while (isStrategiesCreationNotEnd);
 
